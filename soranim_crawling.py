@@ -2,6 +2,9 @@ from selenium import webdriver
 from bs4 import BeautifulSoup
 import requests
 from datetime import date
+import pandas as pd
+import csv
+import time
 
 # 경로 설정입니다. 본인 pc에 맞게 설정해주시면 됩니다.
 path = "D:/CrawlingSaveExcel/chromedriver"
@@ -16,7 +19,7 @@ driver = webdriver.Chrome(path, chrome_options=chrome_options)
 
 current_time = date.today()
 save_time = current_time.strftime("%y/%m/%d")
-print(save_time)
+# print(save_time)
 
 #데이터들 리스트화시키기위한 변수
 info = []
@@ -31,6 +34,14 @@ C_GRADE = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjA
 C_MINUS_GRADE = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIj4KICAgIDxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjRUVDMzA3IiByeD0iMyIvPgogICAgICAgIDxwYXRoIGZpbGw9IiNGRkYiIGQ9Ik0xMS4zOTcgMTEuNjgybC4wMTMuMDRjLjAxOC45OC0uMyAxLjc3LS45NTUgMi4zNzMtLjY1NC42MDMtMS41MzcuOTA1LTIuNjUuOTA1LTEuMTMgMC0yLjA0Ny0uMzgyLTIuNzUtMS4xNDVDNC4zNTIgMTMuMDkyIDQgMTIuMTE2IDQgMTAuOTI4di0xLjg1YzAtMS4xODMuMzQ3LTIuMTU5IDEuMDQxLTIuOTI2QzUuNzM2IDUuMzg0IDYuNjQxIDUgNy43NTggNWMxLjE0NCAwIDIuMDQ0LjI5MSAyLjcuODc0LjY1Ny41ODQuOTc2IDEuMzgyLjk1OSAyLjM5N2wtLjAxNC4wNEg5LjgzNGMwLS42NS0uMTc1LTEuMTQ3LS41MjctMS40OTItLjM1Mi0uMzQ1LS44NjgtLjUxNy0xLjU0OS0uNTE3LS42NTggMC0xLjE4LjI2MS0xLjU2NS43ODRzLS41NzggMS4xODMtLjU3OCAxLjk4djEuODYyYzAgLjgwNS4xOTYgMS40Ny41ODggMS45OTMuMzkyLjUyMi45MjYuNzg0IDEuNjAyLjc4NC42NjMgMCAxLjE2Ny0uMTc0IDEuNTEyLS41Mi4zNDUtLjM0OC41MTctLjg0OS41MTctMS41MDNoMS41NjN6bTQuODAxLS4zSDEyLjI2di0xLjMwOWgzLjkzOHYxLjMwOXoiLz4KICAgIDwvZz4KPC9zdmc+Cg=="
 D_PLUS_GRADE = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIj4KICAgIDxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjREQ4NjRFIiByeD0iMyIvPgogICAgICAgIDxwYXRoIGZpbGw9IiNGRkYiIGQ9Ik0zIDE1VjVoMy4zMDRjMS4yNjggMCAyLjMuMzk2IDMuMDk0IDEuMTg4Ljc5NC43OTIgMS4xOTEgMS44MTEgMS4xOTEgMy4wNTd2MS41MTdjMCAxLjI1LS4zOTcgMi4yNy0xLjE5MSAzLjA1N0M4LjYwMyAxNC42MDYgNy41NzIgMTUgNi4zMDQgMTVIM3ptMS42NjktOC42NnY3LjMyOGgxLjYzNWMuOCAwIDEuNDM3LS4yNzIgMS45MDktLjgxNC40NzItLjU0My43MDctMS4yNC43MDctMi4wOTJWOS4yMzFjMC0uODQzLS4yMzUtMS41MzUtLjcwNy0yLjA3OC0uNDcyLS41NDItMS4xMDgtLjgxNC0xLjkxLS44MTRINC42N3ptMTAuNjQ4IDMuMTU5aDIuNjF2MS41MjRoLTIuNjF2Mi45NzRoLTEuNjIxdi0yLjk3NGgtMi42MjRWOS41aDIuNjI0VjYuNzE3aDEuNjJ2Mi43ODJ6Ii8+CiAgICA8L2c+Cjwvc3ZnPgo="
 D_GRADE = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIj4KICAgIDxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjREQ4NjRFIiByeD0iMyIvPgogICAgICAgIDxwYXRoIGZpbGw9IiNGRkYiIGQ9Ik02IDE1VjVoMy4zMDRjMS4yNjggMCAyLjMuMzk2IDMuMDk0IDEuMTg4Ljc5NC43OTIgMS4xOTEgMS44MTEgMS4xOTEgMy4wNTd2MS41MTdjMCAxLjI1LS4zOTcgMi4yNy0xLjE5MSAzLjA1Ny0uNzk1Ljc4Ny0xLjgyNiAxLjE4MS0zLjA5NCAxLjE4MUg2em0xLjY2OS04LjY2djcuMzI4aDEuNjM1Yy44IDAgMS40MzctLjI3MiAxLjkwOS0uODE0LjQ3Mi0uNTQzLjcwNy0xLjI0LjcwNy0yLjA5MlY5LjIzMWMwLS44NDMtLjIzNS0xLjUzNS0uNzA3LTIuMDc4LS40NzItLjU0Mi0xLjEwOC0uODE0LTEuOTEtLjgxNEg3LjY3eiIvPgogICAgPC9nPgo8L3N2Zz4K"
+
+def getExcelDataline():
+    try:
+        file = open("Crawling_result.csv", 'r')
+        lines = csv.reader(file)
+        return lines
+    except:
+        return 0
 
 def getGrade(_grade):
     if _grade == A_GRADE:
@@ -74,18 +85,6 @@ driver.implicitly_wait(3)
 '''
 
 #저장할 temp변수들 설정
-
-save_time = current_time.strftime("%y/%m/%d")
-number = 0
-name = 0
-grade = 0
-profit_percent = 0
-return_time = 0
-now_state = 0
-age = 0
-income = 0
-cosume_money = 0
-total_loan = 0
 count = 0
 
 #개인 신용
@@ -95,18 +94,30 @@ driver.implicitly_wait(3)
 #투자 상품 갯수
 count = driver.find_element_by_xpath("//*[@id='app']/div[2]/div/div[2]/div[1]/h1/span").text
 count = int(count)
-print(count)
+# print(count)
 
-count = 3
+# count = 4
 for i in range(2, count+2) :
     try :
+        # 저장할 temp변수들 설정
+        save_time = current_time.strftime("%y/%m/%d")
+        number = ""
+        name = ""
+        grade = 0
+        profit_percent = 0
+        return_time = 0
+        now_state = 0
+        age = 0
+        income = 0
+        cosume_money = 0
+        total_loan = 0
 
         #개인 신용
         if(driver.current_url != "https://8percent.kr/deals/individual"):
             driver.get("https://8percent.kr/deals/individual")
             driver.implicitly_wait(3)
 
-        print(i)
+        # print(i)
 
         #선택
         driver.find_element_by_xpath("//*[@id='app']/div[2]/div/div[2]/div[2]/div[" + str(i) + "]/a").click()
@@ -114,76 +125,89 @@ for i in range(2, count+2) :
 
         header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko'}
         req = requests.get(driver.current_url, headers=header)
-        print(driver.current_url)
+        # print(driver.current_url)
         #받아온 소스 전체를 텍스트화
         html = req.text
         #BeautifulSoup 을 통해 html 소스들을 파싱한다.
         parse = BeautifulSoup(html, 'html.parser')
 
+        time.sleep(1)
         #번호 추출
         number = driver.find_element_by_xpath("/html/body/main/header/div[1]/div[1]").text
         driver.implicitly_wait(3)
-        print(number)
+        # print(number)
 
         #대출 이름
         name = driver.find_element_by_xpath("/html/body/main/header/div[1]/h1").text
         driver.implicitly_wait(3)
-        print(name)
+        # print(name)
 
         #나이
         text_age = driver.find_element_by_xpath("/html/body/main/div[2]/section/div[1]/div[2]/p").text
         driver.implicitly_wait(3)
         age = text_age[7:13]
-        print(age)
+        # print(age)
 
         #등급
         temp_grade = driver.find_element_by_xpath("/html/body/main/header/div[1]/div[2]/div[1]/p[2]/img")
         driver.implicitly_wait(3)
         temp_grade = temp_grade.get_attribute('src')
         grade = getGrade(temp_grade)
-        print(grade)
+        # print(grade)
 
         #예상 수익률
         profit_percent = driver.find_element_by_xpath("/html/body/main/header/div[1]/div[2]/div[3]/p[2]").text
         driver.implicitly_wait(3)
-        print(profit_percent)
+        # print(profit_percent)
 
         #상환기간
         return_time = driver.find_element_by_xpath("/html/body/main/header/div[1]/div[2]/div[5]/p[2]").text
         driver.implicitly_wait(3)
-        print(return_time)
+        # print(return_time)
 
         #월 평균 소득
         income = driver.find_element_by_xpath("/html/body/main/div[2]/section/div[1]/div[3]/article/div[2]/summary/span[2]").text
         driver.implicitly_wait(3)
-        print(income)
+        # print(income)
 
         #월 평균 사용 금액
         cosume_money = driver.find_element_by_xpath("/html/body/main/div[2]/section/div[1]/div[3]/article/div[3]/summary/span[2]").text
         driver.implicitly_wait(3)
-        print(cosume_money)
+        # print(cosume_money)
 
         #총 대출 잔액
         total_loan = driver.find_element_by_xpath("/html/body/main/div[2]/section/div[1]/div[3]/article/div[4]/summary/div[2]/span[2]").text
         driver.implicitly_wait(3)
-        print(total_loan)
+        # print(total_loan)
 
         #info 리스트에 데이터 추가
         temp_info = []
         temp_info.append(save_time)
         temp_info.append(number)
         temp_info.append(name)
+        temp_info.append(age)
+        temp_info.append(grade)
         temp_info.append(profit_percent)
         temp_info.append(return_time)
-        temp_info.append(age)
         temp_info.append(income)
         temp_info.append(cosume_money)
         temp_info.append(total_loan)
 
         info.append(temp_info)
         print(temp_info)
+        print(number + "데이터 저장 완료")
     except:
         print("error발생")
 
 
 print(info)
+
+#엑셀에 저장해줍니다.
+if not getExcelDataline() :
+    header = ['투자일','번호', '목적', '나이', '등급', '수익률','월 평균 소득','월 평균 사용 금액','총대출 잔액']
+    info.insert(0,header)
+    data = pd.DataFrame(info)
+    data.to_csv('Crawling_result.csv',header=False, index=False, encoding='cp949', mode='w')
+else :
+    data = pd.DataFrame(info)
+    data.to_csv('Crawling_result.csv', header=False, index=False, encoding='cp949', mode='a')
