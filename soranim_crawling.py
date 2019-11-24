@@ -10,10 +10,6 @@ import time
 path = "D:/CrawlingSaveExcel/chromedriver"
 chrome_options = webdriver.ChromeOptions()
 
-file_path = "C:/190313/"
-# 시크릿모드로 변경
-# chrome_options.add_argument("--incognito")
-
 # 드라이버 설정
 driver = webdriver.Chrome(path, chrome_options=chrome_options)
 
@@ -105,9 +101,7 @@ driver.implicitly_wait(3)
 #투자 상품 갯수
 count = driver.find_element_by_xpath("//*[@id='app']/div[2]/div/div[2]/div[1]/h1/span").text
 count = int(count)
-# print(count)
 
-# count = 4
 for i in range(2, count+2) :
     try :
         # 저장할 temp변수들 설정
@@ -152,7 +146,7 @@ for i in range(2, count+2) :
         number = driver.find_element_by_xpath("/html/body/main/header/div[1]/div[1]").text
         driver.implicitly_wait(3)
         number = number[:-1]
-        print(number)
+        # print(number)
 
         #대출 이름
         name = driver.find_element_by_xpath("/html/body/main/header/div[1]/h1").text
@@ -237,7 +231,7 @@ for i in range(2, count+2) :
         total_loan = ""
         for i in temp_loan:
             total_loan += i
-        print(total_loan)
+        # print(total_loan)
         if total_loan[1] == '억':
             total_loan = list(total_loan)
             if '억' in total_loan :
@@ -264,7 +258,7 @@ for i in range(2, count+2) :
                         for i in temp_loan:
                             total_loan += i
                         break
-        elif total_loan[3] == '억':
+        elif len(total_loan) > 3 and total_loan[3] == '억':
             total_loan = list(total_loan)
             if '억' in total_loan :
                 total_loan.remove('억')
@@ -278,7 +272,7 @@ for i in range(2, count+2) :
                             total_loan += i
                         break
 
-        print(total_loan)
+        # print(total_loan)
 
         #info 리스트에 데이터 추가
         temp_info = []
@@ -300,13 +294,13 @@ for i in range(2, count+2) :
         temp_info.append(total_loan)
 
         info.append(temp_info)
-        print(temp_info)
-        print(number + "데이터 저장 완료")
+        # print(temp_info)
+        print(number + "호 데이터 저장 완료")
     except:
         print("error발생")
 
 
-print(info)
+# print(info)
 
 #저장.
 if not getExcelDataline() :
