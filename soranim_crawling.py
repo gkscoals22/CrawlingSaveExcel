@@ -45,27 +45,38 @@ def getExcelDataline():
 
 def getGrade(_grade):
     if _grade == A_GRADE:
-        return "A"
+        # return "A"
+        return 1;
     elif _grade == A_MINUS_GRADE:
-        return "A-"
+        # return "A-"
+        return 1;
     elif _grade == B_PLUS_GRADE:
-        return "B+"
+        # return "B+"
+        return 2;
     elif _grade == B_GRADE:
-        return "B"
+        # return "B"
+        return 2;
     elif _grade == B_MINUS_GRADE:
-        return "B-"
+        # return "B-"
+        return 2;
     elif _grade == C_PLUS_GRADE:
-        return "C+"
+        # return "C+"
+        return 3;
     elif _grade == C_GRADE:
-        return "C"
+        # return "C"
+        return 3;
     elif _grade ==C_MINUS_GRADE:
-        return "C-"
+        # return "C-"
+        return 3;
     elif _grade == D_PLUS_GRADE:
-        return "D+"
+        # return "D+"
+        return 4;
     elif _grade == D_GRADE:
-        return "D"
+        # return "D"
+        return 4;
     else:
-        return "A+"
+        # return "A+"
+        return 1;
 '''
 #사이트 최초 접속
 driver.get("https://8percent.kr/loan/index/personal/")
@@ -107,8 +118,13 @@ for i in range(2, count+2) :
         profit_percent = 0
         return_time = 0
         now_state = 0
+        return_way = 0
         age = 0
+        gender = 0
+        income_form = 0
         income = 0
+        work_size = 0
+        in_work_time = 0
         cosume_money = 0
         total_loan = 0
 
@@ -135,7 +151,8 @@ for i in range(2, count+2) :
         #번호 추출
         number = driver.find_element_by_xpath("/html/body/main/header/div[1]/div[1]").text
         driver.implicitly_wait(3)
-        # print(number)
+        number = number[:-1]
+        print(number)
 
         #대출 이름
         name = driver.find_element_by_xpath("/html/body/main/header/div[1]/h1").text
@@ -145,8 +162,10 @@ for i in range(2, count+2) :
         #나이
         text_age = driver.find_element_by_xpath("/html/body/main/div[2]/section/div[1]/div[2]/p").text
         driver.implicitly_wait(3)
-        age = text_age[7:13]
+        age = text_age[7:9]
+        gender = text_age[11:13]
         # print(age)
+        # print(gender)
 
         #등급
         temp_grade = driver.find_element_by_xpath("/html/body/main/header/div[1]/div[2]/div[1]/p[2]/img")
@@ -158,37 +177,124 @@ for i in range(2, count+2) :
         #예상 수익률
         profit_percent = driver.find_element_by_xpath("/html/body/main/header/div[1]/div[2]/div[3]/p[2]").text
         driver.implicitly_wait(3)
+        profit_percent = profit_percent[:-1]
         # print(profit_percent)
+
+        #모집 현황
+        now_state = driver.find_element_by_xpath("/html/body/main/header/div[1]/div[2]/div[9]/p[2]").text
+        driver.implicitly_wait(3)
+        now_state = now_state.split(" ")[2]
+        # print(now_state)
+
+        #상환 방식
+        return_way = driver.find_element_by_xpath("/html/body/main/header/div[1]/div[2]/div[7]/p[2]").text
+        driver.implicitly_wait(3)
+        # print(return_way)
 
         #상환기간
         return_time = driver.find_element_by_xpath("/html/body/main/header/div[1]/div[2]/div[5]/p[2]").text
         driver.implicitly_wait(3)
         # print(return_time)
 
+        #소득 형태
+        income_form = driver.find_element_by_xpath("/html/body/main/div[2]/section/div[1]/div[3]/article/div[2]/table/tr[1]/td").text
+        driver.implicitly_wait(3)
+        # print(income_form)
+
+        #직장 규모
+        work_size = driver.find_element_by_xpath("/html/body/main/div[2]/section/div[1]/div[3]/article/div[2]/table/tr[2]/td").text
+        driver.implicitly_wait(3)
+        # print(work_size)
+
+        #재직 기간
+        in_work_time = driver.find_element_by_xpath("/html/body/main/div[2]/section/div[1]/div[3]/article/div[2]/table/tr[3]/td").text
+        driver.implicitly_wait(3)
+        # print(in_work_time)
+
         #월 평균 소득
         income = driver.find_element_by_xpath("/html/body/main/div[2]/section/div[1]/div[3]/article/div[2]/summary/span[2]").text
         driver.implicitly_wait(3)
+        income = income[:-2]
         # print(income)
 
         #월 평균 사용 금액
         cosume_money = driver.find_element_by_xpath("/html/body/main/div[2]/section/div[1]/div[3]/article/div[3]/summary/span[2]").text
         driver.implicitly_wait(3)
+        cosume_money = cosume_money[:-2]
         # print(cosume_money)
 
         #총 대출 잔액
         total_loan = driver.find_element_by_xpath("/html/body/main/div[2]/section/div[1]/div[3]/article/div[4]/summary/div[2]/span[2]").text
         driver.implicitly_wait(3)
-        # print(total_loan)
+        total_loan = total_loan[:-2]
+        total_loan = list(total_loan)
+        if ' ' in total_loan :
+            total_loan.remove(' ')
+        if ',' in total_loan :
+            total_loan.remove(',')
+
+        temp_loan = total_loan
+        total_loan = ""
+        for i in temp_loan:
+            total_loan += i
+        print(total_loan)
+        if total_loan[1] == '억':
+            total_loan = list(total_loan)
+            if '억' in total_loan :
+                total_loan.remove('억')
+                while (True):
+                    if len(total_loan) < 5:
+                        total_loan.insert(1, '0')
+                    if len(total_loan) == 5:
+                        temp_loan = total_loan
+                        total_loan = ""
+                        for i in temp_loan:
+                            total_loan += i
+                        break
+        elif total_loan[2] == '억':
+            total_loan = list(total_loan)
+            if '억' in total_loan :
+                total_loan.remove('억')
+                while (True):
+                    if len(total_loan) < 6:
+                        total_loan.insert(2, '0')
+                    if len(total_loan) == 6:
+                        temp_loan = total_loan
+                        total_loan = ""
+                        for i in temp_loan:
+                            total_loan += i
+                        break
+        elif total_loan[3] == '억':
+            total_loan = list(total_loan)
+            if '억' in total_loan :
+                total_loan.remove('억')
+                while (True):
+                    if len(total_loan) < 7:
+                        total_loan.insert(3, '0')
+                    if len(total_loan) == 7:
+                        temp_loan = total_loan
+                        total_loan = ""
+                        for i in temp_loan:
+                            total_loan += i
+                        break
+
+        print(total_loan)
 
         #info 리스트에 데이터 추가
         temp_info = []
         temp_info.append(save_time)
         temp_info.append(number)
         temp_info.append(name)
-        temp_info.append(age)
         temp_info.append(grade)
         temp_info.append(profit_percent)
         temp_info.append(return_time)
+        temp_info.append(return_way)
+        temp_info.append(now_state)
+        temp_info.append(age)
+        temp_info.append(gender)
+        temp_info.append(income_form)
+        temp_info.append(work_size)
+        temp_info.append(in_work_time)
         temp_info.append(income)
         temp_info.append(cosume_money)
         temp_info.append(total_loan)
@@ -202,9 +308,10 @@ for i in range(2, count+2) :
 
 print(info)
 
-#엑셀에 저장해줍니다.
+#저장.
 if not getExcelDataline() :
-    header = ['투자일','번호', '목적', '나이', '등급', '수익률','월 평균 소득','월 평균 사용 금액','총대출 잔액']
+    header = ['투자일','번호', '목적', '등급', '예상수익률', '상환기간', '상환방식' , '모집현황', '나이',
+              '성별', '소득 형태', '직장 규모','재직 기간' ,'월 평균 소득' ,'월 평균 사용 금액' ,'부채 정보']
     info.insert(0,header)
     data = pd.DataFrame(info)
     data.to_csv('Crawling_result.csv',header=False, index=False, encoding='cp949', mode='w')
