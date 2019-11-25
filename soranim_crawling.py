@@ -7,7 +7,8 @@ import csv
 import time
 
 # 경로 설정입니다. 본인 pc에 맞게 설정해주시면 됩니다.
-path = "D:/CrawlingSaveExcel/chromedriver"
+# path = "D:/CrawlingSaveExcel/chromedriver"
+path = "E:/CrawlingSaveExcel/chromedriver"
 chrome_options = webdriver.ChromeOptions()
 
 # 드라이버 설정
@@ -15,7 +16,6 @@ driver = webdriver.Chrome(path, chrome_options=chrome_options)
 
 current_time = date.today()
 save_time = current_time.strftime("%y/%m/%d")
-# print(save_time)
 
 #데이터들 리스트화시키기위한 변수
 info = []
@@ -41,38 +41,27 @@ def getExcelDataline():
 
 def getGrade(_grade):
     if _grade == A_GRADE:
-        # return "A"
-        return 1;
+        return 1
     elif _grade == A_MINUS_GRADE:
-        # return "A-"
-        return 1;
+        return 1
     elif _grade == B_PLUS_GRADE:
-        # return "B+"
-        return 2;
+        return 2
     elif _grade == B_GRADE:
-        # return "B"
-        return 2;
+        return 2
     elif _grade == B_MINUS_GRADE:
-        # return "B-"
-        return 2;
+        return 2
     elif _grade == C_PLUS_GRADE:
-        # return "C+"
-        return 3;
+        return 3
     elif _grade == C_GRADE:
-        # return "C"
-        return 3;
+        return 3
     elif _grade ==C_MINUS_GRADE:
-        # return "C-"
-        return 3;
+        return 3
     elif _grade == D_PLUS_GRADE:
-        # return "D+"
-        return 4;
+        return 4
     elif _grade == D_GRADE:
-        # return "D"
-        return 4;
+        return 4
     else:
-        # return "A+"
-        return 1;
+        return 1
 '''
 #사이트 최초 접속
 driver.get("https://8percent.kr/loan/index/personal/")
@@ -104,7 +93,7 @@ count = int(count)
 
 for i in range(2, count+2) :
     try :
-        # 저장할 temp변수들 설정
+        # temp변수들 설정
         save_time = current_time.strftime("%y/%m/%d")
         number = ""
         name = ""
@@ -127,18 +116,13 @@ for i in range(2, count+2) :
             driver.get("https://8percent.kr/deals/individual")
             driver.implicitly_wait(3)
 
-        # print(i)
-
         #선택
         driver.find_element_by_xpath("//*[@id='app']/div[2]/div/div[2]/div[2]/div[" + str(i) + "]/a").click()
         driver.implicitly_wait(3)
 
         header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko'}
         req = requests.get(driver.current_url, headers=header)
-        # print(driver.current_url)
-        #받아온 소스 전체를 텍스트화
         html = req.text
-        #BeautifulSoup 을 통해 html 소스들을 파싱한다.
         parse = BeautifulSoup(html, 'html.parser')
 
         time.sleep(1)
@@ -146,33 +130,27 @@ for i in range(2, count+2) :
         number = driver.find_element_by_xpath("/html/body/main/header/div[1]/div[1]").text
         driver.implicitly_wait(3)
         number = number[:-1]
-        # print(number)
 
         #대출 이름
         name = driver.find_element_by_xpath("/html/body/main/header/div[1]/h1").text
         driver.implicitly_wait(3)
-        # print(name)
 
         #나이
         text_age = driver.find_element_by_xpath("/html/body/main/div[2]/section/div[1]/div[2]/p").text
         driver.implicitly_wait(3)
         age = text_age[7:9]
         gender = text_age[11:13]
-        # print(age)
-        # print(gender)
 
         #등급
         temp_grade = driver.find_element_by_xpath("/html/body/main/header/div[1]/div[2]/div[1]/p[2]/img")
         driver.implicitly_wait(3)
         temp_grade = temp_grade.get_attribute('src')
         grade = getGrade(temp_grade)
-        # print(grade)
 
         #예상 수익률
         profit_percent = driver.find_element_by_xpath("/html/body/main/header/div[1]/div[2]/div[3]/p[2]").text
         driver.implicitly_wait(3)
         profit_percent = profit_percent[:-1]
-        # print(profit_percent)
 
         #모집 현황
         now_state = driver.find_element_by_xpath("/html/body/main/header/div[1]/div[2]/div[9]/p[2]").text
@@ -183,12 +161,10 @@ for i in range(2, count+2) :
         #상환 방식
         return_way = driver.find_element_by_xpath("/html/body/main/header/div[1]/div[2]/div[7]/p[2]").text
         driver.implicitly_wait(3)
-        # print(return_way)
 
         #상환기간
         return_time = driver.find_element_by_xpath("/html/body/main/header/div[1]/div[2]/div[5]/p[2]").text
         driver.implicitly_wait(3)
-        # print(return_time)
 
         #소득 형태
         income_form = driver.find_element_by_xpath("/html/body/main/div[2]/section/div[1]/div[3]/article/div[2]/table/tr[1]/td").text
@@ -198,24 +174,21 @@ for i in range(2, count+2) :
         #직장 규모
         work_size = driver.find_element_by_xpath("/html/body/main/div[2]/section/div[1]/div[3]/article/div[2]/table/tr[2]/td").text
         driver.implicitly_wait(3)
-        # print(work_size)
 
         #재직 기간
         in_work_time = driver.find_element_by_xpath("/html/body/main/div[2]/section/div[1]/div[3]/article/div[2]/table/tr[3]/td").text
         driver.implicitly_wait(3)
-        # print(in_work_time)
+        in_work_time = in_work_time[:-1]
 
         #월 평균 소득
         income = driver.find_element_by_xpath("/html/body/main/div[2]/section/div[1]/div[3]/article/div[2]/summary/span[2]").text
         driver.implicitly_wait(3)
         income = income[:-2]
-        # print(income)
 
         #월 평균 사용 금액
         cosume_money = driver.find_element_by_xpath("/html/body/main/div[2]/section/div[1]/div[3]/article/div[3]/summary/span[2]").text
         driver.implicitly_wait(3)
         cosume_money = cosume_money[:-2]
-        # print(cosume_money)
 
         #총 대출 잔액
         total_loan = driver.find_element_by_xpath("/html/body/main/div[2]/section/div[1]/div[3]/article/div[4]/summary/div[2]/span[2]").text
@@ -272,8 +245,6 @@ for i in range(2, count+2) :
                             total_loan += i
                         break
 
-        # print(total_loan)
-
         #info 리스트에 데이터 추가
         temp_info = []
         temp_info.append(save_time)
@@ -294,7 +265,7 @@ for i in range(2, count+2) :
         temp_info.append(total_loan)
 
         info.append(temp_info)
-        # print(temp_info)
+
         print(number + "호 데이터 저장 완료")
     except:
         print("error발생")
