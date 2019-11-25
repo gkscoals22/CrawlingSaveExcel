@@ -193,57 +193,63 @@ for i in range(2, count+2) :
         #총 대출 잔액
         total_loan = driver.find_element_by_xpath("/html/body/main/div[2]/section/div[1]/div[3]/article/div[4]/summary/div[2]/span[2]").text
         driver.implicitly_wait(3)
-        total_loan = total_loan[:-2]
-        total_loan = list(total_loan)
-        if ' ' in total_loan :
-            total_loan.remove(' ')
-        if ',' in total_loan :
-            total_loan.remove(',')
 
-        temp_loan = total_loan
-        total_loan = ""
-        for i in temp_loan:
-            total_loan += i
-        # print(total_loan)
-        if total_loan[1] == '억':
+        if total_loan[-2] + total_loan[-1] == "억원":
+            total_loan = total_loan[:-2]
+            total_loan += "0000"
+
+        else:
+            total_loan = total_loan[:-2]
             total_loan = list(total_loan)
-            if '억' in total_loan :
-                total_loan.remove('억')
-                while (True):
-                    if len(total_loan) < 5:
-                        total_loan.insert(1, '0')
-                    if len(total_loan) == 5:
-                        temp_loan = total_loan
-                        total_loan = ""
-                        for i in temp_loan:
-                            total_loan += i
-                        break
-        elif total_loan[2] == '억':
-            total_loan = list(total_loan)
-            if '억' in total_loan :
-                total_loan.remove('억')
-                while (True):
-                    if len(total_loan) < 6:
-                        total_loan.insert(2, '0')
-                    if len(total_loan) == 6:
-                        temp_loan = total_loan
-                        total_loan = ""
-                        for i in temp_loan:
-                            total_loan += i
-                        break
-        elif len(total_loan) > 3 and total_loan[3] == '억':
-            total_loan = list(total_loan)
-            if '억' in total_loan :
-                total_loan.remove('억')
-                while (True):
-                    if len(total_loan) < 7:
-                        total_loan.insert(3, '0')
-                    if len(total_loan) == 7:
-                        temp_loan = total_loan
-                        total_loan = ""
-                        for i in temp_loan:
-                            total_loan += i
-                        break
+            if ' ' in total_loan:
+                total_loan.remove(' ')
+            if ',' in total_loan:
+                total_loan.remove(',')
+
+            temp_loan = total_loan
+            total_loan = ""
+            for i in temp_loan:
+                total_loan += i
+            # print(total_loan)
+            if total_loan[1] == '억':
+                total_loan = list(total_loan)
+                if '억' in total_loan:
+                    total_loan.remove('억')
+                    while (True):
+                        if len(total_loan) < 5:
+                            total_loan.insert(1, '0')
+                        if len(total_loan) == 5:
+                            temp_loan = total_loan
+                            total_loan = ""
+                            for i in temp_loan:
+                                total_loan += i
+                            break
+            elif total_loan[2] == '억':
+                total_loan = list(total_loan)
+                if '억' in total_loan:
+                    total_loan.remove('억')
+                    while (True):
+                        if len(total_loan) < 6:
+                            total_loan.insert(2, '0')
+                        if len(total_loan) == 6:
+                            temp_loan = total_loan
+                            total_loan = ""
+                            for i in temp_loan:
+                                total_loan += i
+                            break
+            elif len(total_loan) > 3 and total_loan[3] == '억':
+                total_loan = list(total_loan)
+                if '억' in total_loan:
+                    total_loan.remove('억')
+                    while (True):
+                        if len(total_loan) < 7:
+                            total_loan.insert(3, '0')
+                        if len(total_loan) == 7:
+                            temp_loan = total_loan
+                            total_loan = ""
+                            for i in temp_loan:
+                                total_loan += i
+                            break
 
         #info 리스트에 데이터 추가
         temp_info = []
