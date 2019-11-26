@@ -5,9 +5,10 @@ from datetime import date
 import pandas as pd
 import csv
 import time
+import sys
 
 # 경로 설정입니다. 본인 pc에 맞게 설정해주시면 됩니다.
-# path = "D:/CrawlingSaveExcel/chromedriver"
+path = "C:/Users/윤수호/Desktop/191125/chromedriver"
 path = "E:/CrawlingSaveExcel/chromedriver"
 chrome_options = webdriver.ChromeOptions()
 
@@ -273,11 +274,12 @@ for i in range(2, count+2) :
         info.append(temp_info)
 
         print(number + "호 데이터 저장 완료")
-    except:
-        print("error발생")
-
-
-# print(info)
+    except KeyboardInterrupt:
+        print("Interrupt 발생")
+        print("현재 데이터까지 저장")
+        break
+    except :
+        print("error 발생")
 
 #저장.
 if not getExcelDataline() :
